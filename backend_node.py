@@ -1,4 +1,3 @@
-# backend_node.py
 from flask import Flask, request, jsonify
 import requests
 import threading
@@ -8,10 +7,10 @@ log.setLevel(logging.ERROR)
 
 app = Flask(__name__)
 
-CENTER_NODE_URL = "http://localhost:5001"  # Update with the actual center node address
-BACKEND_ID = "backend_1"  # Assign a unique ID to this backend
+CENTER_NODE_URL = "http://localhost:5001"
+BACKEND_ID = "backend_1"
 load = 0
-lock = threading.Lock()  # Thread-safe lock for updating load
+lock = threading.Lock()
 
 
 def report_load():
@@ -89,4 +88,4 @@ def health():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5002)  # Backend runs on port 5002
+    app.run(host="0.0.0.0", port=5002)

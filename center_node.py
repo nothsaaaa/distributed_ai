@@ -4,14 +4,11 @@ from flask import Flask, request, jsonify
 import logging
 import random
 
-# Set up logging to suppress Werkzeug logs
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
-# Initialize Flask app
 app = Flask(__name__)
 
-# Hardcoded list of backend servers
 BACKENDS = [
     {"id": "backend_1", "url": "http://localhost:5002", "last_checked": 0, "is_down": False, "load": 0, "last_response_code": None},
     {"id": "backend_2", "url": "http://192.168.0.166:5002", "last_checked": 0, "is_down": False, "load": 0, "last_response_code": None},
@@ -50,22 +47,18 @@ def update_backend_health():
 
 
 def find_least_loaded_backend():
-    """Find the least loaded available backend server."""
-    update_backend_health()  # Ensure health data is up-to-date
+    update_backend_health()
 
-    # Shuffle the backends to ensure random selection order
     shuffled_backends = BACKENDS[:]
     random.shuffle(shuffled_backends)
     print(f"[Center Node] Shuffled backend list: {[b['id'] for b in shuffled_backends]}")
 
-    # Filter out only the available backends
     available_backends = [backend for backend in shuffled_backends if not backend["is_down"]]
 
     if not available_backends:
         print("[Center Node] No available backends.")
         return None
 
-    # Find the backend with the lowest load among available ones
     least_loaded_backend = min(available_backends, key=lambda b: b["load"])
     print(f"[Center Node] Selected backend: {least_loaded_backend['id']} with load {least_loaded_backend['load']}.")
     return least_loaded_backend
@@ -120,13 +113,11 @@ def global_health():
 
 @app.route('/health', methods=['GET'])
 def health():
-    """Health check endpoint for center node."""
     return "OK", 200
 
 
 @app.route('/update_load', methods=['POST'])
 def update_load():
-    """Update the load for a specific backend."""
     data = request.json
     backend_id = data.get('backend_id')
     load = data.get('load')
